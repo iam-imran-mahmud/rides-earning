@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Driver Expenses</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="app.js"></script>
+  </head>
+  <body data-view="reports">
+    <main class="app">
+      <header class="hero">
+        <h1>Driver Expenses</h1>
+        <p id="screenTitle">Reports</p>
+      </header>
+
+      <section id="reportsView" class="screen active">
+        <div class="period-tabs" role="tablist" aria-label="Report period">
+          <button class="period-tab active" type="button" data-period="daily">Daily</button>
+          <button class="period-tab" type="button" data-period="weekly">Weekly</button>
+          <button class="period-tab" type="button" data-period="monthly">Monthly</button>
+          <button class="period-tab" type="button" data-period="yearly">Yearly</button>
+        </div>
+
+        <section class="report-card">
+          <p id="profitLabel">All-time profit</p>
+          <strong id="reportProfit">$0.00</strong>
+          <div class="bar-chart" id="barChart" aria-label="Profit, last 4 periods"></div>
+          <p class="chart-caption">Profit, last 4 periods</p>
+
+          <div class="stats-grid">
+            <div><span>Days worked</span><b id="daysWorked">0</b></div>
+            <div><span>Km driven</span><b id="kmDriven">0</b></div>
+            <div><span>Revenue</span><b id="revenueTotal">$0.00</b></div>
+            <div><span>Fuel cost</span><b id="fuelCostTotal">$0.00</b></div>
+            <div><span>Other cost</span><b id="otherCostTotal">$0.00</b></div>
+            <div><span>Avg revenue / day</span><b id="avgRevenueDay">$0.00</b></div>
+            <div><span>Revenue / km</span><b id="revenueKm">$0.00</b></div>
+            <div><span>Profit / km</span><b id="profitKm">$0.00</b></div>
+            <div><span>Duration (hours)</span><b id="hoursTotal">0</b></div>
+            <div><span>Revenue / hour</span><b id="revenueHour">$0.00</b></div>
+            <div><span>Profit / hour</span><b id="profitHour">$0.00</b></div>
+          </div>
+        </section>
+
+        <section id="recentReports" class="entry-stack"></section>
+      </section>
+
+      <section id="logView" class="screen">
+        <form id="entryForm" class="form-card">
+          <div class="field-grid">
+            <label>
+              <span>Date *</span>
+              <input name="date" type="date" required>
+            </label>
+            <label>
+              <span>Km driven *</span>
+              <input name="km" type="number" min="0" step="0.1" inputmode="decimal" required>
+            </label>
+            <label>
+              <span>Revenue ($) *</span>
+              <input name="revenue" type="number" min="0" step="0.01" inputmode="decimal" required>
+            </label>
+            <label>
+              <span>Hours *</span>
+              <input name="hours" type="number" min="0" step="0.1" inputmode="decimal" required>
+            </label>
+            <label>
+              <span>Fuel rate ($/L) *</span>
+              <input name="fuelRate" type="number" min="0" step="0.01" inputmode="decimal" required>
+            </label>
+            <label>
+              <span>Mileage (L/100km) *</span>
+              <input name="mileage" type="number" min="0" step="0.1" inputmode="decimal" required>
+            </label>
+            <label>
+              <span>Other cost ($)</span>
+              <input name="otherCost" type="number" min="0" step="0.01" inputmode="decimal">
+            </label>
+            <label>
+              <span>Other cost description</span>
+              <input name="description" type="text" maxlength="80">
+            </label>
+          </div>
+
+          <div class="live-grid">
+            <div><span>Fuel cost</span><b id="liveFuel">$0.00</b></div>
+            <div><span>Profit</span><b id="liveProfit">$0.00</b></div>
+            <div><span>Revenue / km</span><b id="liveRevenueKm">-</b></div>
+            <div><span>Profit / km</span><b id="liveProfitKm">-</b></div>
+          </div>
+
+          <button class="primary-button" type="submit">Save</button>
+        </form>
+
+        <section class="results-card">
+          <div class="results-head">
+            <h2>Results Summary</h2>
+            <span id="logSummaryDate">Today</span>
+          </div>
+          <div class="result-line">
+            <span><i class="dot purple-dot"></i>Total Fares</span>
+            <strong id="summaryRevenue">$0.00</strong>
+          </div>
+          <div class="result-line">
+            <span><i class="dot purple-dot"></i>Fuel Cost</span>
+            <strong class="loss" id="summaryFuel">-$0.00</strong>
+          </div>
+          <div class="result-line">
+            <span><i class="dot orange-dot"></i>Other</span>
+            <strong class="loss" id="summaryOther">-$0.00</strong>
+          </div>
+          <div class="result-profit">
+            <span>🏆 Estimated Profit</span>
+            <strong id="summaryProfit">$0.00</strong>
+          </div>
+        </section>
+      </section>
+
+      <section id="entriesView" class="screen">
+        <div id="entriesList" class="entry-stack"></div>
+      </section>
+
+      <section id="backupView" class="screen">
+        <section class="backup-card">
+          <p>Data is stored only in this browser. Back it up regularly.</p>
+          <button id="exportJsonBtn" class="primary-button" type="button">Export backup (JSON)</button>
+          <button id="exportCsvBtn" class="secondary-button" type="button">Export CSV</button>
+          <label class="import-label">
+            <span>Import backup (JSON, merges by date)</span>
+            <input id="importJsonInput" type="file" accept="application/json,.json">
+          </label>
+        </section>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Main navigation">
+      <button class="nav-item active" type="button" data-view="reports">Reports</button>
+      <button class="nav-item" type="button" data-view="log">Log</button>
+      <button class="nav-item" type="button" data-view="entries">Entries</button>
+      <button class="nav-item" type="button" data-view="backup">Backup</button>
+    </nav>
+  </body>
+</html>
